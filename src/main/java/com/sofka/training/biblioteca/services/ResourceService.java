@@ -99,4 +99,23 @@ public class ResourceService implements IResourceService {
             return "EL recurso no esta disponible en el momento";
         }).orElseThrow(()->new RuntimeException("El recurso que quiere prestar no existe"));
     }
+
+    @Override
+    public String returnResource(String id) {
+        return getById(id).map(resourceDTO -> {
+
+            if(resourceDTO.getAmountBorrowed()>0){
+                resourceDTO.setAmountBorrowed(resourceDTO.getAmountBorrowed()-1);
+
+                Resource resourceUpdate = mapper.toResource(resourceDTO);
+                repository.save(resourceUpdate);
+
+                return "El recurso ha sido devuelto con exito";
+            }
+
+            return "No hay recursos por devolver";
+        }).orElseThrow(()-> new RuntimeException("Recurso no existe"));
+    }
+
+
 }

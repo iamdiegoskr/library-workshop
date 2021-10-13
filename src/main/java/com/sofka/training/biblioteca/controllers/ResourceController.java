@@ -56,6 +56,12 @@ public class ResourceController {
         return new ResponseEntity<>(service.lendRecourse(id),HttpStatus.OK);
     }
 
+    @PutMapping(value = "/return/{id}")
+    public ResponseEntity<String> returnResource(@PathVariable() String id){
+        return new ResponseEntity<>(service.returnResource(id),HttpStatus.OK);
+    }
+
+
 
 
 }

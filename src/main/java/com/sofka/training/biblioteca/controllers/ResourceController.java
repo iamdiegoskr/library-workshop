@@ -41,4 +41,9 @@ public class ResourceController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @PutMapping(value = "/update")
+    public ResponseEntity<ResourceDTO> updateResource(@RequestBody ResourceDTO resourceDTO){
+        return new ResponseEntity<>(service.update(resourceDTO),HttpStatus.OK);
+    }
+
 }

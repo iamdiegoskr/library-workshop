@@ -47,6 +47,21 @@ public class ResourceService implements IResourceService {
 
     @Override
     public ResourceDTO update(ResourceDTO resourceDTO) {
-        return null;
+
+        Optional<Resource> resource = repository.findById(resourceDTO.getId());
+
+        if(resource.isPresent()){
+
+            resource.get().setId(resourceDTO.getId());
+            resource.get().setName(resourceDTO.getName());
+            resource.get().setKind(resourceDTO.getKind());
+            resource.get().setThematic(resourceDTO.getThematic());
+            resource.get().setQuantityAvailable(resourceDTO.getQuantityAvailable());
+            resource.get().setAmountBorrowed(resourceDTO.getAmountBorrowed());
+            resource.get().setLocalDate(resourceDTO.getLocalDate());
+
+            return mapper.toResourceDto(repository.save(resource.get()));
+        }
+        throw new RuntimeException("El recurso no existe");
     }
 }

@@ -46,4 +46,9 @@ public class ResourceController {
         return new ResponseEntity<>(service.update(resourceDTO),HttpStatus.OK);
     }
 
+    @GetMapping(value = "/available/{id}")
+    public ResponseEntity<String> validateResourceAvailability(@PathVariable() String id){
+        return new ResponseEntity<>(service.checkResourceAvailability(id),HttpStatus.OK);
+    }
+
 }

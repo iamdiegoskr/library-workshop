@@ -11,5 +11,6 @@ public interface IResourceService {
     boolean delete(String id);
     Optional<ResourceDTO> getById(String id);
     ResourceDTO update(ResourceDTO resourceDTO);
+    String checkResourceAvailability(String id);
 
 }

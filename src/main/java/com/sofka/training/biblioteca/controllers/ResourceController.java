@@ -51,4 +51,11 @@ public class ResourceController {
         return new ResponseEntity<>(service.checkResourceAvailability(id),HttpStatus.OK);
     }
 
+    @PutMapping(value = "/lend/{id}")
+    public ResponseEntity<String> lendResource(@PathVariable() String id){
+        return new ResponseEntity<>(service.lendRecourse(id),HttpStatus.OK);
+    }
+
+
+
 }

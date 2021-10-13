@@ -8,6 +8,7 @@ import com.sofka.training.biblioteca.services.interfaces.IResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -82,4 +83,20 @@ public class ResourceService implements IResourceService {
         return resourceDTO.getQuantityAvailable()>resourceDTO.getAmountBorrowed();
     }
 
+    @Override
+    public String lendRecourse(String id){
+        return getById(id).map(resourceDTO -> {
+            if(isAvailableResource(resourceDTO)){
+
+                resourceDTO.setAmountBorrowed(resourceDTO.getAmountBorrowed()+1);
+                resourceDTO.setLocalDate(LocalDate.now());
+
+                Resource resourceUpdate = mapper.toResource(resourceDTO);
+                repository.save(resourceUpdate);
+
+                return "EL prestamo del recurso fue exitoso";
+            }
+            return "EL recurso no esta disponible en el momento";
+        }).orElseThrow(()->new RuntimeException("El recurso que quiere prestar no existe"));
+    }
 }

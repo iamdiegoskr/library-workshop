@@ -12,5 +12,6 @@ public interface IResourceService {
     Optional<ResourceDTO> getById(String id);
     ResourceDTO update(ResourceDTO resourceDTO);
     String checkResourceAvailability(String id);
+    String lendRecourse(String id);
 
 }

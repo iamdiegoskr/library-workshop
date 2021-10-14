@@ -92,7 +92,6 @@ class ResourceServiceTest {
         resource3.setAmountBorrowed(0);
         resource3.setLocalDate(LocalDate.parse("2021-11-13"));
 
-
         var list = new ArrayList<Resource>();
 
         list.add(resource);
@@ -108,5 +107,47 @@ class ResourceServiceTest {
         Assertions.assertEquals(resource2.getName(), result.get(1).getName());
         Assertions.assertEquals(resource3.getName(), result.get(2).getName());
 
+    }
+
+    @Test
+    @DisplayName("Test to get resource by id")
+    void getResourceById(){
+
+        var resource = new Resource();
+        resource.setId("1111");
+        resource.setName("Don Quijote de la Mancha");
+        resource.setKind("Novela");
+        resource.setThematic("Historia");
+        resource.setQuantityAvailable(30);
+        resource.setAmountBorrowed(0);
+        resource.setLocalDate(LocalDate.parse("2021-11-13"));
+
+        var resource2 = new Resource();
+        resource2.setId("2222");
+        resource2.setName("Guerra y paz");
+        resource2.setKind("Novela");
+        resource2.setThematic("Historia");
+        resource2.setQuantityAvailable(15);
+        resource2.setAmountBorrowed(0);
+        resource2.setLocalDate(LocalDate.parse("2021-11-13"));
+
+        var list = new ArrayList<Resource>();
+
+        list.add(resource);
+        list.add(resource2);
+
+        Mockito.when(repository.findById(Mockito.any())).thenReturn(list.stream().findFirst());
+
+        var result = service.getById(list.get(0).getId());
+
+        Assertions.assertEquals(list.get(0).getId(), result.get().getId(), "el id debe corresponder");
+
+        Assertions.assertEquals("Don Quijote de la Mancha", result.get().getName(), "el nombre debe corresponder");
+        Assertions.assertEquals(30, result.get().getQuantityAvailable(), "la cantidad disponible debe ser igual");
+        Assertions.assertEquals(LocalDate.parse("2021-11-13"), result.get().getLocalDate(), "la fecha de cuando se presto debe estar nula");
+        Assertions.assertEquals(0, result.get().getAmountBorrowed(), "la cantidad prestada debe ser cero");
+        Assertions.assertEquals("Novela", result.get().getKind(), "el tipo debe coincidir ");
+        Assertions.assertEquals("Historia", result.get().getThematic(), "la tematica debe coincidir");
+        
     }
 }

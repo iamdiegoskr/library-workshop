@@ -140,8 +140,8 @@ class ResourceServiceTest {
 
 
     @Test
-    @DisplayName("test para editar un recurso de manera exitosa")
-    void update() {
+    @DisplayName("test to edit a resource succes")
+    void updateResource() {
         var resource = new ResourceDTO();
         resource.setId("1111");
         resource.setName("El ingenioso caballero Don Quijote de la Mancha");
@@ -166,5 +166,24 @@ class ResourceServiceTest {
         Assertions.assertEquals("Historia", result.getThematic(), "la tematica debe coincidir");
     }
 
+    @Test
+    @DisplayName("test to lend resource success")
+    void LendResourceSuccessfully() {
+        var resourceDTO = new ResourceDTO();
+        resourceDTO.setId("1111");
+        resourceDTO.setName("Don Quijote de la Mancha");
+        resourceDTO.setKind("Novela");
+        resourceDTO.setThematic("Historia");
+        resourceDTO.setQuantityAvailable(30);
+        resourceDTO.setAmountBorrowed(0);
+        resourceDTO.setLocalDate(LocalDate.parse("2021-11-13"));
+
+        Mockito.when(repository.findById(resourceDTO.getId())).thenReturn(resources().stream().findFirst());
+        Mockito.when(repository.save(Mockito.any())).thenReturn(mapper.toResource(resourceDTO));
+        var result = service.lendRecourse(resourceDTO.getId());
+
+        Assertions.assertEquals("EL prestamo del recurso fue exitoso", result);
+
+    }
 
 }

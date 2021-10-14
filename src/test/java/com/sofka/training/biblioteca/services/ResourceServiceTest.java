@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -58,5 +59,54 @@ class ResourceServiceTest {
         Assertions.assertEquals(resource.getQuantityAvailable(), result.getQuantityAvailable(), "La cantidad no corresponde");
         Assertions.assertEquals(resource.getAmountBorrowed(), result.getAmountBorrowed(), "La cantidad no corresponde");
         Assertions.assertEquals(resource.getLocalDate(), result.getLocalDate(), "La fecha no corresponde");
+    }
+
+    @Test
+    @DisplayName("Test get list resources success")
+    void getListResources(){
+
+        var resource = new Resource();
+        resource.setId("1111");
+        resource.setName("El amor en los tiempos del cólera");
+        resource.setKind("Novela");
+        resource.setThematic("Romance");
+        resource.setQuantityAvailable(10);
+        resource.setAmountBorrowed(0);
+        resource.setLocalDate(LocalDate.parse("2021-11-13"));
+
+        var resource2 = new Resource();
+        resource2.setId("2222");
+        resource2.setName("Cumbres borrascosas");
+        resource2.setKind("Novela");
+        resource2.setThematic("Romance");
+        resource2.setQuantityAvailable(30);
+        resource2.setAmountBorrowed(0);
+        resource2.setLocalDate(LocalDate.parse("2021-11-13"));
+
+        var resource3 = new Resource();
+        resource3.setId("3333");
+        resource3.setName("Orgullo y prejuicio");
+        resource3.setKind("Novela");
+        resource3.setThematic("Romance");
+        resource3.setQuantityAvailable(15);
+        resource3.setAmountBorrowed(0);
+        resource3.setLocalDate(LocalDate.parse("2021-11-13"));
+
+
+        var list = new ArrayList<Resource>();
+
+        list.add(resource);
+        list.add(resource2);
+        list.add(resource3);
+
+        Mockito.when(repository.findAll()).thenReturn(list);
+
+        var result = service.list();
+
+        Assertions.assertEquals(3, result.size());
+        Assertions.assertEquals(resource.getName(), result.get(0).getName());
+        Assertions.assertEquals(resource2.getName(), result.get(1).getName());
+        Assertions.assertEquals(resource3.getName(), result.get(2).getName());
+
     }
 }

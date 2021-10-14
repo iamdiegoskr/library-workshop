@@ -24,7 +24,7 @@ public class ResourceService implements IResourceService {
 
 
     @Override
-    public Iterable<ResourceDTO> list() {
+    public List<ResourceDTO> list() {
         return mapper.toResourcesDto(repository.findAll());
     }
 

@@ -17,7 +17,7 @@ public class ResourceController {
     private IResourceService service;
 
     @GetMapping()
-    public Iterable<ResourceDTO> listResources(){
+    public List<ResourceDTO> listResources(){
         return service.list();
     }
 

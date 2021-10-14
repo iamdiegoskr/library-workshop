@@ -2,6 +2,7 @@ package com.sofka.training.biblioteca.services;
 
 import com.sofka.training.biblioteca.collections.Resource;
 import com.sofka.training.biblioteca.dtos.ResourceDTO;
+import com.sofka.training.biblioteca.mappers.ResourceMapper;
 import com.sofka.training.biblioteca.repositories.ResourceRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,6 +27,47 @@ class ResourceServiceTest {
 
     @Autowired
     private ResourceService service;
+
+    @Autowired
+    private ResourceMapper mapper;
+
+
+    private List<Resource> resources() {
+
+        var resource = new Resource();
+        resource.setId("1111");
+        resource.setName("Don Quijote de la Mancha");
+        resource.setKind("Novela");
+        resource.setThematic("Historia");
+        resource.setQuantityAvailable(30);
+        resource.setAmountBorrowed(0);
+        resource.setLocalDate(LocalDate.parse("2021-11-13"));
+
+        var resource2 = new Resource();
+        resource2.setId("2222");
+        resource2.setName("Guerra y paz");
+        resource2.setKind("Novela");
+        resource2.setThematic("Historia");
+        resource2.setQuantityAvailable(15);
+        resource2.setAmountBorrowed(0);
+        resource2.setLocalDate(LocalDate.parse("2021-11-13"));
+
+        var resource3 = new Resource();
+        resource3.setId("3333");
+        resource3.setName("Orgullo y prejuicio");
+        resource3.setKind("Novela");
+        resource3.setThematic("Romance");
+        resource3.setQuantityAvailable(15);
+        resource3.setAmountBorrowed(0);
+        resource3.setLocalDate(LocalDate.parse("2021-11-13"));
+
+        var resources = new ArrayList<Resource>();
+        resources.add(resource);
+        resources.add(resource2);
+        resources.add(resource3);
+
+        return resources;
+    }
 
     @Test
     @DisplayName("Test save resource success")
@@ -65,47 +108,14 @@ class ResourceServiceTest {
     @DisplayName("Test get list resources success")
     void getListResources(){
 
-        var resource = new Resource();
-        resource.setId("1111");
-        resource.setName("El amor en los tiempos del cólera");
-        resource.setKind("Novela");
-        resource.setThematic("Romance");
-        resource.setQuantityAvailable(10);
-        resource.setAmountBorrowed(0);
-        resource.setLocalDate(LocalDate.parse("2021-11-13"));
-
-        var resource2 = new Resource();
-        resource2.setId("2222");
-        resource2.setName("Cumbres borrascosas");
-        resource2.setKind("Novela");
-        resource2.setThematic("Romance");
-        resource2.setQuantityAvailable(30);
-        resource2.setAmountBorrowed(0);
-        resource2.setLocalDate(LocalDate.parse("2021-11-13"));
-
-        var resource3 = new Resource();
-        resource3.setId("3333");
-        resource3.setName("Orgullo y prejuicio");
-        resource3.setKind("Novela");
-        resource3.setThematic("Romance");
-        resource3.setQuantityAvailable(15);
-        resource3.setAmountBorrowed(0);
-        resource3.setLocalDate(LocalDate.parse("2021-11-13"));
-
-        var list = new ArrayList<Resource>();
-
-        list.add(resource);
-        list.add(resource2);
-        list.add(resource3);
-
-        Mockito.when(repository.findAll()).thenReturn(list);
+        Mockito.when(repository.findAll()).thenReturn(resources());
 
         var result = service.list();
 
         Assertions.assertEquals(3, result.size());
-        Assertions.assertEquals(resource.getName(), result.get(0).getName());
-        Assertions.assertEquals(resource2.getName(), result.get(1).getName());
-        Assertions.assertEquals(resource3.getName(), result.get(2).getName());
+        Assertions.assertEquals("Don Quijote de la Mancha", result.get(0).getName());
+        Assertions.assertEquals("Guerra y paz", result.get(1).getName());
+        Assertions.assertEquals("Orgullo y prejuicio", result.get(2).getName());
 
     }
 
@@ -113,34 +123,11 @@ class ResourceServiceTest {
     @DisplayName("Test to get resource by id")
     void getResourceById(){
 
-        var resource = new Resource();
-        resource.setId("1111");
-        resource.setName("Don Quijote de la Mancha");
-        resource.setKind("Novela");
-        resource.setThematic("Historia");
-        resource.setQuantityAvailable(30);
-        resource.setAmountBorrowed(0);
-        resource.setLocalDate(LocalDate.parse("2021-11-13"));
+        Mockito.when(repository.findById(Mockito.any())).thenReturn(resources().stream().findFirst());
 
-        var resource2 = new Resource();
-        resource2.setId("2222");
-        resource2.setName("Guerra y paz");
-        resource2.setKind("Novela");
-        resource2.setThematic("Historia");
-        resource2.setQuantityAvailable(15);
-        resource2.setAmountBorrowed(0);
-        resource2.setLocalDate(LocalDate.parse("2021-11-13"));
+        var result = service.getById(resources().get(0).getId());
 
-        var list = new ArrayList<Resource>();
-
-        list.add(resource);
-        list.add(resource2);
-
-        Mockito.when(repository.findById(Mockito.any())).thenReturn(list.stream().findFirst());
-
-        var result = service.getById(list.get(0).getId());
-
-        Assertions.assertEquals(list.get(0).getId(), result.get().getId(), "el id debe corresponder");
+        Assertions.assertEquals(resources().get(0).getId(), result.get().getId(), "el id debe corresponder");
 
         Assertions.assertEquals("Don Quijote de la Mancha", result.get().getName(), "el nombre debe corresponder");
         Assertions.assertEquals(30, result.get().getQuantityAvailable(), "la cantidad disponible debe ser igual");
@@ -148,6 +135,36 @@ class ResourceServiceTest {
         Assertions.assertEquals(0, result.get().getAmountBorrowed(), "la cantidad prestada debe ser cero");
         Assertions.assertEquals("Novela", result.get().getKind(), "el tipo debe coincidir ");
         Assertions.assertEquals("Historia", result.get().getThematic(), "la tematica debe coincidir");
-        
+
     }
+
+
+    @Test
+    @DisplayName("test para editar un recurso de manera exitosa")
+    void update() {
+        var resource = new ResourceDTO();
+        resource.setId("1111");
+        resource.setName("El ingenioso caballero Don Quijote de la Mancha");
+        resource.setKind("Novela");
+        resource.setThematic("Historia");
+        resource.setQuantityAvailable(30);
+        resource.setAmountBorrowed(0);
+        resource.setLocalDate(LocalDate.parse("2021-11-13"));
+
+        Mockito.when(repository.save(Mockito.any())).thenReturn(mapper.toResource(resource));
+        Mockito.when(repository.findById(resource.getId())).thenReturn(resources().stream().findFirst());
+        var result = service.update(resource);
+
+        Assertions.assertNotNull(result, "el dato guardado no debe ser nullo");
+
+        Assertions.assertEquals("1111", result.getId(), "el id debe corresponder");
+        Assertions.assertEquals("El ingenioso caballero Don Quijote de la Mancha", result.getName(), "el nombre debe corresponder");
+        Assertions.assertEquals(30, result.getQuantityAvailable(), "la cantidad disponible debe ser igual");
+        Assertions.assertEquals(LocalDate.parse("2021-11-13"), result.getLocalDate(), "la fecha de cuando se presto debe estar nula");
+        Assertions.assertEquals(0, result.getAmountBorrowed(), "la cantidad prestada debe ser cero");
+        Assertions.assertEquals("Novela", result.getKind(), "el tipo debe coincidir ");
+        Assertions.assertEquals("Historia", result.getThematic(), "la tematica debe coincidir");
+    }
+
+
 }

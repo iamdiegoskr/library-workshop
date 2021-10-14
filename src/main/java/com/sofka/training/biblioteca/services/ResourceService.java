@@ -75,8 +75,7 @@ public class ResourceService implements IResourceService {
             if(isAvailableResource(resourceDTO)){
                 return "El recurso esta disponible";
             }
-            return "El recurso no esta disponible," +
-                    " la fecha de su ultimo prestamo fue el dia " + resourceDTO.getLocalDate();
+            return "El recurso no esta disponible, la fecha de su ultimo prestamo fue el dia " + resourceDTO.getLocalDate();
         }).orElseThrow(()-> new RuntimeException("EL recurso que busca no existe"));
 
     }

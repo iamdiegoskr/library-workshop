@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/resources")
 public class ResourceController {
@@ -61,6 +63,15 @@ public class ResourceController {
         return new ResponseEntity<>(service.returnResource(id),HttpStatus.OK);
     }
 
+    @GetMapping("/recommend/type/{kind}")
+    public ResponseEntity<List<ResourceDTO>> recommendedByType(@PathVariable() String kind){
+        return new ResponseEntity<>(service.recommendByResourceType(kind),HttpStatus.OK);
+    }
+
+    @GetMapping("/recommend/thematic/{thematic}")
+    public ResponseEntity<List<ResourceDTO>> recommendedByThematic(@PathVariable() String thematic){
+        return new ResponseEntity<>(service.recommendByTheme(thematic),HttpStatus.OK);
+    }
 
 
 

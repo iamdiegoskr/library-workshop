@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -115,6 +117,38 @@ public class ResourceService implements IResourceService {
 
             return "No hay recursos por devolver";
         }).orElseThrow(()-> new RuntimeException("Recurso no existe"));
+    }
+
+    @Override
+    public List<ResourceDTO> recommendByResourceType(String kind) {
+        List<ResourceDTO> listResources = new ArrayList<>();
+        repository.findByKind(kind).forEach(resource -> {
+            listResources.add(mapper.toResourceDto(resource));
+        });
+        return listResources;
+    }
+
+    @Override
+    public List<ResourceDTO> recommendByTheme(String thematic) {
+        List<ResourceDTO> listResources = new ArrayList<>();
+        repository.findByThematic(thematic).forEach(resource -> {
+            listResources.add(mapper.toResourceDto(resource));
+        });
+        return listResources;
+    }
+
+    @Override
+    public List<ResourceDTO> recommendByThemeAndType(String kind, String thematic) {
+
+        List<ResourceDTO> resourceDTOS = new ArrayList<>();
+        List<ResourceDTO> listResources = new ArrayList<>();
+
+        listResources.addAll(recommendByTheme(thematic));
+        listResources.addAll(recommendByResourceType(kind));
+
+        listResources.stream().distinct().forEach(resourceDTOS::add);
+
+        return resourceDTOS;
     }
 
 

@@ -73,6 +73,4 @@ public class ResourceController {
         return new ResponseEntity<>(service.recommendByTheme(thematic),HttpStatus.OK);
     }
 
-
-
 }
